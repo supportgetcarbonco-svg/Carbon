@@ -1,0 +1,4633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Carbon</title>
+
+<style>
+:root{
+  --purple:#5b35d5;
+  --purple-dark:#4320b8;
+  --purple-light:#eeeaff;
+  --purple-soft:#f7f4ff;
+  --ink:#17151f;
+  --muted:#777481;
+  --line:#ebe9f1;
+  --white:#fff;
+  --green:#16a36d;
+  --red:#e84c67;
+  --orange:#f29b38;
+  --shadow:0 12px 35px rgba(54,34,125,.10);
+}
+
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  width:100%;
+  min-height:100%;
+  background:#f3f1f8;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--ink);
+}
+
+body{
+  overflow-x:hidden;
+}
+
+button,
+input{
+  font:inherit;
+}
+
+button{
+  border:0;
+  cursor:pointer;
+}
+
+#app{
+  width:100%;
+  min-height:100vh;
+}
+
+.screen{
+  display:none;
+  min-height:100vh;
+  width:100%;
+}
+
+.screen.active{
+  display:block;
+}
+
+.phone{
+  position:relative;
+  width:100%;
+  max-width:470px;
+  min-height:100vh;
+  margin:0 auto;
+  background:#f8f7fb;
+  overflow:hidden;
+}
+
+.page{
+  min-height:100vh;
+  padding:22px 18px 110px;
+}
+
+.page.no-nav{
+  padding-bottom:30px;
+}
+
+.topbar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:24px;
+}
+
+.back{
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 5px 18px rgba(0,0,0,.07);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--ink);
+  font-size:23px;
+}
+
+.top-title{
+  font-size:19px;
+  font-weight:750;
+  margin:0;
+}
+
+.spacer{
+  width:42px;
+}
+
+.icon{
+  width:20px;
+  height:20px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+svg{
+  width:100%;
+  height:100%;
+}
+
+/* WELCOME */
+#welcome .phone{
+  background:
+    radial-gradient(circle at 80% 12%,rgba(131,102,239,.42),transparent 30%),
+    linear-gradient(150deg,#4a24bc 0%,#6038d7 48%,#7250df 100%);
+  color:#fff;
+}
+
+.welcome-page{
+  min-height:100vh;
+  padding:38px 24px 28px;
+  display:flex;
+  flex-direction:column;
+  position:relative;
+}
+
+.welcome-logo{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:25px;
+  font-weight:850;
+  letter-spacing:-1px;
+}
+
+.logo-mark{
+  width:31px;
+  height:31px;
+  border-radius:9px;
+  background:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--purple);
+  font-weight:900;
+  box-shadow:0 8px 20px rgba(0,0,0,.14);
+}
+
+.welcome-copy{
+  margin-top:64px;
+}
+
+.welcome-copy h1{
+  font-size:39px;
+  line-height:1.06;
+  letter-spacing:-1.8px;
+  margin-bottom:15px;
+}
+
+.welcome-copy p{
+  color:rgba(255,255,255,.78);
+  line-height:1.55;
+  font-size:15px;
+  max-width:310px;
+}
+
+.face-area{
+  position:relative;
+  width:210px;
+  height:210px;
+  margin:35px auto 20px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.face-ring{
+  position:absolute;
+  width:190px;
+  height:190px;
+  border-radius:50%;
+  border:2px solid rgba(255,255,255,.4);
+  animation:ringPulse 2.4s ease-in-out infinite;
+}
+
+.face-ring:before,
+.face-ring:after{
+  content:"";
+  position:absolute;
+  inset:12px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.18);
+}
+
+.face-ring:after{
+  inset:-9px;
+  border-color:rgba(255,255,255,.11);
+}
+
+.face-image{
+  width:143px;
+  height:143px;
+  border-radius:50%;
+  object-fit:cover;
+  border:7px solid rgba(255,255,255,.18);
+  box-shadow:0 15px 35px rgba(26,11,92,.35);
+  position:relative;
+  z-index:2;
+}
+
+.face-scan{
+  position:absolute;
+  width:151px;
+  height:2px;
+  background:rgba(255,255,255,.85);
+  box-shadow:0 0 12px #fff;
+  z-index:3;
+  animation:scan 2.2s ease-in-out infinite;
+}
+
+.scan-corner{
+  position:absolute;
+  width:25px;
+  height:25px;
+  border-color:#fff;
+  z-index:4;
+}
+
+.scan-tl{top:31px;left:31px;border-top:3px solid;border-left:3px solid;border-radius:7px 0 0 0}
+.scan-tr{top:31px;right:31px;border-top:3px solid;border-right:3px solid;border-radius:0 7px 0 0}
+.scan-bl{bottom:31px;left:31px;border-bottom:3px solid;border-left:3px solid;border-radius:0 0 0 7px}
+.scan-br{bottom:31px;right:31px;border-bottom:3px solid;border-right:3px solid;border-radius:0 0 7px 0}
+
+.verification-pill{
+  margin:0 auto 22px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding:8px 13px;
+  width:max-content;
+  background:rgba(255,255,255,.12);
+  border:1px solid rgba(255,255,255,.18);
+  border-radius:30px;
+  font-size:12px;
+}
+
+.green-dot{
+  width:7px;
+  height:7px;
+  background:#56e3a6;
+  border-radius:50%;
+  box-shadow:0 0 8px #56e3a6;
+}
+
+.welcome-bottom{
+  margin-top:auto;
+}
+
+.primary{
+  width:100%;
+  min-height:55px;
+  border-radius:17px;
+  background:#fff;
+  color:var(--purple-dark);
+  font-weight:800;
+  font-size:16px;
+  box-shadow:0 12px 28px rgba(22,8,86,.22);
+}
+
+.primary:active,
+.action-btn:active,
+.card:active,
+.nav-item:active{
+  transform:scale(.985);
+}
+
+.welcome-note{
+  text-align:center;
+  font-size:12px;
+  color:rgba(255,255,255,.62);
+  margin-top:15px;
+}
+
+/* VERIFICATION */
+#verify .phone{
+  background:linear-gradient(155deg,#f8f6ff,#fff);
+}
+
+.verify-hero{
+  background:linear-gradient(145deg,#512ac5,#704de0);
+  color:#fff;
+  border-radius:0 0 36px 36px;
+  padding:30px 22px 36px;
+  margin:-22px -18px 25px;
+  min-height:360px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+}
+
+.verify-back{
+  width:100%;
+  display:flex;
+  justify-content:flex-start;
+  margin-bottom:22px;
+}
+
+.verify-back button{
+  background:rgba(255,255,255,.14);
+  color:#fff;
+}
+
+.verify-title{
+  font-size:28px;
+  font-weight:800;
+  margin:5px 0 9px;
+}
+
+.verify-sub{
+  font-size:14px;
+  color:rgba(255,255,255,.76);
+  max-width:290px;
+  line-height:1.5;
+}
+
+.verify-face{
+  margin-top:25px;
+  width:130px;
+  height:130px;
+  border-radius:50%;
+  padding:6px;
+  background:linear-gradient(145deg,#fff,rgba(255,255,255,.25));
+  box-shadow:0 15px 35px rgba(37,17,111,.25);
+}
+
+.verify-face img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:50%;
+}
+
+.status-card{
+  background:#fff;
+  border-radius:20px;
+  box-shadow:var(--shadow);
+  padding:17px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:14px;
+}
+
+.status-icon{
+  width:45px;
+  height:45px;
+  border-radius:14px;
+  background:#eeeaff;
+  color:var(--purple);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:none;
+}
+
+.status-text strong{
+  display:block;
+  font-size:14px;
+  margin-bottom:4px;
+}
+
+.status-text span{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.verify-btn{
+  background:var(--purple);
+  color:#fff;
+  margin-top:7px;
+  box-shadow:0 12px 24px rgba(91,53,213,.25);
+}
+
+/* HOME */
+#home .phone,
+#account .phone,
+#transactions .phone,
+#loans .phone,
+#loan01 .phone,
+#loan02 .phone,
+#savings .phone,
+#payment .phone,
+#credits .phone,
+#reports .phone,
+#cards .phone,
+#bills .phone,
+#kyc .phone,
+#letter .phone,
+#support .phone{
+  background:#f8f7fb;
+}
+
+.home-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:24px;
+}
+
+.greeting{
+  display:flex;
+  align-items:center;
+  gap:11px;
+}
+
+.small-profile-wrap{
+  width:48px;
+  height:48px;
+  padding:3px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#6c49df,#d5caff,#5730ce);
+  box-shadow:0 5px 15px rgba(91,53,213,.22);
+  animation:profileGlow 3s ease-in-out infinite;
+}
+
+.small-profile{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid #fff;
+}
+
+.greeting-text small{
+  color:var(--muted);
+  font-size:12px;
+}
+
+.greeting-text strong{
+  display:block;
+  margin-top:2px;
+  font-size:16px;
+}
+
+.bell{
+  width:44px;
+  height:44px;
+  border-radius:50%;
+  background:#fff;
+  box-shadow:0 6px 18px rgba(0,0,0,.06);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position:relative;
+}
+
+.notify-dot{
+  position:absolute;
+  width:9px;
+  height:9px;
+  border-radius:50%;
+  background:#ee3f59;
+  border:2px solid #fff;
+  right:7px;
+  top:7px;
+  animation:notificationPulse 1.8s ease-in-out infinite;
+}
+
+.balance-card{
+  position:relative;
+  overflow:hidden;
+  min-height:190px;
+  border-radius:25px;
+  padding:24px;
+  background:
+    radial-gradient(circle at 90% 20%,rgba(255,255,255,.22),transparent 30%),
+    linear-gradient(135deg,#4821ba,#6d48dc);
+  color:#fff;
+  box-shadow:0 18px 35px rgba(71,37,175,.23);
+  margin-bottom:18px;
+
+  /* Added animation */
+  animation:
+    homeCardEntrance .65s ease both,
+    balanceGlow 4.5s ease-in-out infinite .7s;
+}
+
+.balance-card:before,
+.balance-card:after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  background:rgba(255,255,255,.07);
+}
+
+.balance-card:before{
+  width:170px;
+  height:170px;
+  right:-65px;
+  bottom:-80px;
+  animation:cardCircle 5s ease-in-out infinite;
+}
+
+.balance-card:after{
+  width:100px;
+  height:100px;
+  right:35px;
+  top:-50px;
+  animation:cardCircleSmall 4s ease-in-out infinite;
+}
+
+.balance-label{
+  color:rgba(255,255,255,.72);
+  font-size:12px;
+}
+
+.balance{
+  font-size:34px;
+  letter-spacing:-1px;
+  font-weight:800;
+  margin:8px 0 24px;
+}
+
+.balance-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+}
+
+.account-mini{
+  font-size:11px;
+  color:rgba(255,255,255,.7);
+}
+
+.account-mini strong{
+  color:#fff;
+  display:block;
+  font-size:13px;
+  margin-top:3px;
+}
+
+.copy-mini{
+  padding:8px 11px;
+  border-radius:10px;
+  background:rgba(255,255,255,.13);
+  color:#fff;
+  font-size:11px;
+}
+
+.quick-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:23px;
+}
+
+.quick{
+  background:#fff;
+  border-radius:18px;
+  min-height:84px;
+  padding:13px 7px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  box-shadow:0 7px 20px rgba(0,0,0,.045);
+  position:relative;
+  overflow:hidden;
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+
+.quick:before{
+  content:"";
+  position:absolute;
+  width:58px;
+  height:58px;
+  border-radius:50%;
+  top:-28px;
+  right:-24px;
+  opacity:.34;
+  animation:quickCircle 4s ease-in-out infinite;
+}
+
+.quick:nth-child(1):before{
+  background:#cfc4ff;
+}
+
+.quick:nth-child(2):before{
+  background:#bcefdc;
+  animation-delay:.5s;
+}
+
+.quick:nth-child(3):before{
+  background:#ffd9a8;
+  animation-delay:1s;
+}
+
+.quick:nth-child(4):before{
+  background:#d9c8ff;
+  animation-delay:1.5s;
+}
+
+.quick:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 25px rgba(54,34,125,.09);
+}
+
+.quick-icon{
+  width:35px;
+  height:35px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--purple);
+  background:var(--purple-light);
+  position:relative;
+  z-index:1;
+  animation:blockFloat 3.2s ease-in-out infinite;
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+
+.quick:nth-child(2) .quick-icon{
+  background:#e7faf1;
+  color:var(--green);
+  animation-delay:.3s;
+}
+
+.quick:nth-child(3) .quick-icon{
+  background:#fff1e2;
+  color:#e88a2b;
+  animation-delay:.6s;
+}
+
+.quick:nth-child(4) .quick-icon{
+  background:#eeeaff;
+  color:#6743d8;
+  animation-delay:.9s;
+}
+
+.quick:hover .quick-icon{
+  transform:translateY(-3px) scale(1.06);
+  box-shadow:0 7px 16px rgba(91,53,213,.12);
+}
+
+.quick span{
+  font-size:10px;
+  font-weight:650;
+  position:relative;
+  z-index:1;
+}
+
+.section-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin:0 1px 12px;
+}
+
+.section-head h3{
+  font-size:16px;
+  margin:0;
+}
+
+.see{
+  color:var(--purple);
+  font-size:12px;
+  font-weight:700;
+}
+
+.feature-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:24px;
+}
+
+.feature{
+  border-radius:21px;
+  padding:17px;
+  min-height:122px;
+  background:#fff;
+  box-shadow:0 8px 24px rgba(0,0,0,.045);
+  position:relative;
+  overflow:hidden;
+  transition:transform .25s ease,box-shadow .25s ease;
+}
+
+.feature:after{
+  content:"";
+  position:absolute;
+  width:78px;
+  height:78px;
+  border-radius:20px;
+  transform:rotate(25deg);
+  right:-30px;
+  bottom:-35px;
+  opacity:.5;
+  animation:coloredBlock 4.5s ease-in-out infinite;
+}
+
+.feature.purple:after{
+  background:#d8ceff;
+}
+
+.feature.green:after{
+  background:#bcefdc;
+  animation-delay:1s;
+}
+
+.feature:hover{
+  transform:translateY(-3px);
+  box-shadow:0 12px 28px rgba(54,34,125,.08);
+}
+
+.feature.purple{
+  background:linear-gradient(145deg,#ece7ff,#f8f6ff);
+}
+
+.feature.green{
+  background:linear-gradient(145deg,#e9faf3,#fff);
+}
+
+.feature-icon{
+  width:37px;
+  height:37px;
+  border-radius:12px;
+  background:rgba(91,53,213,.1);
+  color:var(--purple);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:15px;
+  position:relative;
+  z-index:1;
+  animation:blockFloat 3.6s ease-in-out infinite;
+}
+
+.feature.green .feature-icon{
+  color:var(--green);
+  background:rgba(22,163,109,.10);
+  animation-delay:.7s;
+}
+
+.feature strong,
+.feature span{
+  position:relative;
+  z-index:1;
+}
+
+.feature strong{
+  display:block;
+  font-size:13px;
+}
+
+.feature span{
+  color:var(--muted);
+  font-size:10px;
+  display:block;
+  margin-top:4px;
+}
+
+.transaction-list{
+  background:#fff;
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:0 7px 22px rgba(0,0,0,.04);
+}
+
+.tx{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  padding:15px 14px;
+  border-bottom:1px solid #f0eef4;
+  cursor:pointer;
+}
+
+.tx:last-child{
+  border-bottom:0;
+}
+
+.tx-icon{
+  width:42px;
+  height:42px;
+  border-radius:14px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:none;
+}
+
+.tx-icon.loan{
+  background:#ece8ff;
+  color:var(--purple);
+}
+
+.tx-icon.vat{
+  background:#fff1e5;
+  color:#e88a2b;
+}
+
+.tx-icon.payment{
+  background:#e9f9f2;
+  color:var(--green);
+}
+
+.tx-main{
+  flex:1;
+  min-width:0;
+}
+
+.tx-main strong{
+  display:block;
+  font-size:12px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.tx-main small{
+  color:#8d8994;
+  display:block;
+  font-size:10px;
+  margin-top:4px;
+}
+
+.tx-amount{
+  text-align:right;
+  font-size:12px;
+  font-weight:750;
+}
+
+.tx-amount.credit{
+  color:var(--green);
+}
+
+.tx-amount.debit{
+  color:var(--red);
+}
+
+.tx-date{
+  display:block;
+  color:#aaa5af;
+  font-size:9px;
+  margin-top:4px;
+  font-weight:500;
+}
+
+/* =========================================================
+   NEW HOMEPAGE PROMOTIONAL CARD
+   ========================================================= */
+
+.home-promo{
+  position:relative;
+  overflow:hidden;
+  min-height:150px;
+  margin:4px 0 22px;
+  padding:20px 18px;
+  border-radius:23px;
+  background:
+    radial-gradient(circle at 85% 20%,rgba(255,255,255,.22),transparent 24%),
+    linear-gradient(135deg,#5427c9 0%,#6d35d8 55%,#7b42e7 100%);
+  color:#fff;
+  box-shadow:0 15px 30px rgba(76,39,184,.20);
+  isolation:isolate;
+  animation:promoEntrance .6s ease both;
+}
+
+.home-promo::before,
+.home-promo::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  pointer-events:none;
+  z-index:-1;
+}
+
+.home-promo::before{
+  width:145px;
+  height:145px;
+  right:-50px;
+  bottom:-72px;
+  background:rgba(255,255,255,.12);
+  border:18px solid rgba(255,255,255,.08);
+  animation:promoFloat 4s ease-in-out infinite;
+}
+
+.home-promo::after{
+  width:70px;
+  height:70px;
+  right:42px;
+  top:-27px;
+  background:rgba(255,255,255,.09);
+  animation:promoOrb 3.5s ease-in-out infinite;
+}
+
+.home-promo-content{
+  position:relative;
+  z-index:3;
+  max-width:70%;
+}
+
+.home-promo small{
+  display:block;
+  font-size:10px;
+  opacity:.72;
+  margin-bottom:7px;
+}
+
+.home-promo h3{
+  margin:0;
+  font-size:22px;
+  line-height:1.05;
+  letter-spacing:-.6px;
+}
+
+.home-promo p{
+  margin:8px 0 13px;
+  font-size:10px;
+  line-height:1.45;
+  color:rgba(255,255,255,.75);
+}
+
+.promo-button{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:8px 12px;
+  border-radius:20px;
+  background:linear-gradient(90deg,#f02c88,#ff3e9a);
+  color:#fff;
+  font-size:10px;
+  font-weight:800;
+  box-shadow:0 7px 16px rgba(221,26,119,.28);
+  transition:transform .2s ease;
+}
+
+.promo-button:active{
+  transform:scale(.95);
+}
+
+.promo-decoration{
+  position:absolute;
+  right:16px;
+  bottom:13px;
+  width:105px;
+  height:105px;
+  z-index:2;
+}
+
+.promo-coin{
+  position:absolute;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:50%;
+  font-weight:900;
+  color:#6b3cbd;
+  background:linear-gradient(145deg,#ffe45b,#ffbf25);
+  box-shadow:
+    inset 0 2px 3px rgba(255,255,255,.7),
+    0 7px 15px rgba(0,0,0,.12);
+}
+
+.promo-coin.one{
+  width:31px;
+  height:31px;
+  right:45px;
+  top:10px;
+  animation:coinFloat 2.8s ease-in-out infinite;
+}
+
+.promo-coin.two{
+  width:39px;
+  height:39px;
+  right:5px;
+  top:31px;
+  animation:coinFloat 3.2s ease-in-out infinite .3s;
+}
+
+.promo-coin.three{
+  width:48px;
+  height:48px;
+  right:32px;
+  bottom:0;
+  animation:coinFloat 3.6s ease-in-out infinite .6s;
+}
+
+.promo-glass{
+  position:absolute;
+  width:68px;
+  height:68px;
+  right:20px;
+  bottom:-8px;
+  border:3px solid rgba(255,255,255,.35);
+  border-radius:38% 38% 48% 48%;
+  background:rgba(255,255,255,.08);
+  transform:rotate(-5deg);
+}
+
+/* BOTTOM NAV */
+.bottom-nav{
+  position:fixed;
+  z-index:100;
+  bottom:0;
+  left:50%;
+  transform:translateX(-50%);
+  width:100%;
+  max-width:470px;
+  height:77px;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(18px);
+  border-top:1px solid rgba(225,222,233,.7);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  padding:8px 8px 10px;
+}
+
+.nav-item{
+  background:transparent;
+  color:#96929e;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  font-size:10px;
+  font-weight:650;
+  transition:.2s;
+}
+
+.nav-item.active{
+  color:var(--purple);
+}
+
+.nav-icon{
+  width:24px;
+  height:24px;
+}
+
+/* ACCOUNT */
+.account-hero{
+  background:linear-gradient(145deg,#5029c5,#714ddf);
+  color:#fff;
+  border-radius:27px;
+  padding:23px;
+  margin-bottom:17px;
+  position:relative;
+  overflow:hidden;
+}
+
+.account-hero:after{
+  content:"";
+  position:absolute;
+  width:170px;
+  height:170px;
+  border-radius:50%;
+  border:28px solid rgba(255,255,255,.05);
+  right:-72px;
+  bottom:-75px;
+}
+
+.account-person{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  position:relative;
+  z-index:2;
+}
+
+/* Enhanced profile ring */
+.account-photo-ring{
+  position:relative;
+  width:65px;
+  height:65px;
+  padding:4px;
+  border-radius:50%;
+  background:#fff;
+  animation:profileGlow 3s ease-in-out infinite;
+  z-index:3;
+}
+
+.account-photo-ring::before{
+  content:"";
+  position:absolute;
+  inset:-3px;
+  border-radius:50%;
+  background:conic-gradient(
+    from 0deg,
+    #ffffff,
+    #bca9ff,
+    #6c43dc,
+    #e5dfff,
+    #ffffff
+  );
+  z-index:-1;
+  animation:accountRingRotate 4s linear infinite;
+}
+
+.account-photo-ring::after{
+  content:"✓";
+  position:absolute;
+  right:-3px;
+  bottom:-2px;
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#35b77b;
+  color:#fff;
+  border:2px solid #fff;
+  font-size:9px;
+  font-weight:900;
+  z-index:5;
+  animation:verificationPulse 2s ease-in-out infinite;
+}
+
+.account-photo{
+  width:100%;
+  height:100%;
+  border-radius:50%;
+  object-fit:cover;
+  border:2px solid rgba(255,255,255,.8);
+  background:#fff;
+}
+
+.account-person strong{
+  display:block;
+  font-size:17px;
+}
+
+.account-person span{
+  display:block;
+  color:rgba(255,255,255,.7);
+  font-size:11px;
+  margin-top:3px;
+}
+
+.account-number{
+  position:relative;
+  z-index:2;
+  margin-top:22px;
+  padding-top:15px;
+  border-top:1px solid rgba(255,255,255,.17);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.account-number-text small{
+  display:block;
+  color:rgba(255,255,255,.6);
+  font-size:10px;
+  margin-bottom:4px;
+}
+
+.account-number-text strong{
+  letter-spacing:1px;
+  font-size:15px;
+}
+
+.copy-account{
+  padding:9px 11px;
+  background:rgba(255,255,255,.13);
+  border-radius:10px;
+  color:#fff;
+  font-size:11px;
+}
+
+.account-balance{
+  background:#fff;
+  border-radius:20px;
+  padding:18px;
+  box-shadow:var(--shadow);
+  margin-bottom:17px;
+}
+
+.account-balance small{
+  color:var(--muted);
+  font-size:11px;
+}
+
+.account-balance strong{
+  display:block;
+  font-size:27px;
+  margin-top:6px;
+}
+
+.account-section{
+  margin-bottom:18px;
+}
+
+.account-section-title{
+  font-size:12px;
+  color:#898591;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.5px;
+  margin:0 5px 9px;
+}
+
+.account-list{
+  background:#fff;
+  border-radius:20px;
+  overflow:hidden;
+  box-shadow:0 6px 22px rgba(0,0,0,.035);
+}
+
+.account-row{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:15px;
+  border-bottom:1px solid #f0eef4;
+  cursor:pointer;
+}
+
+.account-row:last-child{
+  border-bottom:0;
+}
+
+.option-icon{
+  width:39px;
+  height:39px;
+  border-radius:13px;
+  background:#f0ecff;
+  color:var(--purple);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex:none;
+}
+
+.account-row-main{
+  flex:1;
+}
+
+.account-row-main strong{
+  display:block;
+  font-size:12px;
+}
+
+.account-row-main span{
+  display:block;
+  color:#98949e;
+  font-size:10px;
+  margin-top:4px;
+}
+
+.arrow{
+  color:#b0acb5;
+  font-size:19px;
+}
+
+/* GENERAL DETAIL */
+.detail-card{
+  background:#fff;
+  border-radius:23px;
+  padding:19px;
+  box-shadow:var(--shadow);
+  margin-bottom:14px;
+}
+
+.detail-title{
+  font-size:17px;
+  font-weight:800;
+  margin-bottom:16px;
+}
+
+.amount-hero{
+  background:linear-gradient(145deg,#4d27c1,#7150df);
+  color:#fff;
+  border-radius:25px;
+  padding:24px;
+  box-shadow:0 15px 30px rgba(73,38,180,.2);
+  margin-bottom:15px;
+}
+
+.amount-label{
+  color:rgba(255,255,255,.68);
+  font-size:11px;
+}
+
+.amount-value{
+  font-size:32px;
+  font-weight:850;
+  margin-top:8px;
+}
+
+.detail-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+.detail-item{
+  padding:14px;
+  border-radius:16px;
+  background:#f8f7fb;
+}
+
+.detail-item small{
+  display:block;
+  color:#92909a;
+  font-size:9px;
+  margin-bottom:5px;
+}
+
+.detail-item strong{
+  display:block;
+  font-size:12px;
+}
+
+.progress{
+  height:8px;
+  border-radius:10px;
+  background:#ebe8f3;
+  overflow:hidden;
+  margin:13px 0 8px;
+}
+
+.progress > span{
+  display:block;
+  height:100%;
+  width:100%;
+  background:linear-gradient(90deg,#5630cd,#896ce8);
+  border-radius:10px;
+}
+
+.activity{
+  position:relative;
+  padding-left:23px;
+}
+
+.activity:before{
+  content:"";
+  position:absolute;
+  left:6px;
+  top:6px;
+  bottom:6px;
+  width:1px;
+  background:#ddd9e7;
+}
+
+.activity-item{
+  position:relative;
+  padding-bottom:18px;
+}
+
+.activity-item:last-child{
+  padding-bottom:0;
+}
+
+.activity-dot{
+  position:absolute;
+  left:-21px;
+  top:3px;
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:var(--purple);
+  border:3px solid #eeeaff;
+}
+
+.breakdown-row{
+  display:flex;
+  justify-content:space-between;
+  padding:11px 0;
+  border-bottom:1px solid #f0eef4;
+  font-size:12px;
+}
+
+.breakdown-row:last-child{
+  border-bottom:0;
+  font-weight:800;
+  font-size:14px;
+}
+
+.breakdown-row span:last-child{
+  font-weight:700;
+}
+
+/* LOANS */
+.loan-card{
+  background:#fff;
+  border-radius:23px;
+  padding:20px;
+  box-shadow:var(--shadow);
+  margin-bottom:14px;
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+}
+
+.loan-card:after{
+  content:"";
+  position:absolute;
+  width:110px;
+  height:110px;
+  border-radius:50%;
+  background:#f1edff;
+  right:-48px;
+  top:-43px;
+}
+
+.loan-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  position:relative;
+  z-index:2;
+}
+
+.loan-name{
+  font-size:13px;
+  font-weight:800;
+}
+
+.loan-status{
+  padding:6px 9px;
+  background:#fff0f2;
+  color:#dc4059;
+  border-radius:9px;
+  font-size:9px;
+  font-weight:750;
+}
+
+.loan-amount{
+  font-size:27px;
+  font-weight:850;
+  margin:20px 0 17px;
+  position:relative;
+  z-index:2;
+}
+
+.loan-meta{
+  display:flex;
+  gap:8px;
+  position:relative;
+  z-index:2;
+}
+
+.loan-meta div{
+  background:#f8f7fb;
+  border-radius:11px;
+  padding:9px 10px;
+  flex:1;
+}
+
+.loan-meta small{
+  display:block;
+  color:#9995a0;
+  font-size:8px;
+}
+
+.loan-meta span{
+  display:block;
+  font-size:10px;
+  font-weight:700;
+  margin-top:3px;
+}
+
+/* SAVINGS / PAYMENT / OTHER PAGES */
+.simple-card{
+  background:#fff;
+  border-radius:22px;
+  padding:20px;
+  box-shadow:var(--shadow);
+  margin-bottom:14px;
+}
+
+.simple-icon{
+  width:53px;
+  height:53px;
+  border-radius:17px;
+  background:#eeeaff;
+  color:var(--purple);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:15px;
+}
+
+.simple-card h3{
+  font-size:17px;
+  margin-bottom:6px;
+}
+
+.simple-card p{
+  color:#85818c;
+  font-size:12px;
+  line-height:1.55;
+  margin-bottom:0;
+}
+
+.action-btn{
+  width:100%;
+  min-height:52px;
+  background:var(--purple);
+  color:#fff;
+  border-radius:16px;
+  font-weight:750;
+  box-shadow:0 10px 22px rgba(91,53,213,.2);
+  margin-top:12px;
+}
+
+/* TRANSACTIONS */
+.filter-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:15px;
+  overflow:auto;
+}
+
+.filter{
+  flex:none;
+  padding:9px 13px;
+  border-radius:12px;
+  background:#fff;
+  color:#85818f;
+  font-size:10px;
+  font-weight:700;
+}
+
+.filter.active{
+  background:var(--purple);
+  color:#fff;
+}
+
+.tx-page-list{
+  background:#fff;
+  border-radius:22px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+}
+
+.month-label{
+  padding:15px 15px 8px;
+  font-size:11px;
+  color:#898591;
+  font-weight:800;
+}
+
+/* KYC */
+.kyc-banner{
+  background:linear-gradient(145deg,#ece8ff,#f8f6ff);
+  border-radius:23px;
+  padding:20px;
+  margin-bottom:16px;
+}
+
+.kyc-status{
+  display:inline-flex;
+  align-items:center;
+  gap:7px;
+  padding:7px 10px;
+  border-radius:10px;
+  background:#e4f8ef;
+  color:#128b5b;
+  font-size:10px;
+  font-weight:800;
+  margin-bottom:13px;
+}
+
+.kyc-banner h3{
+  margin-bottom:5px;
+  font-size:18px;
+}
+
+.kyc-banner p{
+  color:#77737e;
+  font-size:11px;
+  line-height:1.5;
+  margin-bottom:0;
+}
+
+/* TOAST */
+.toast{
+  position:fixed;
+  z-index:999;
+  left:50%;
+  bottom:92px;
+  transform:translate(-50%,20px);
+  background:#19171f;
+  color:#fff;
+  padding:11px 15px;
+  border-radius:13px;
+  font-size:11px;
+  opacity:0;
+  pointer-events:none;
+  transition:.3s;
+  white-space:nowrap;
+}
+
+.toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+/* ANIMATIONS */
+.fade-in{
+  animation:fadeIn .35s ease both;
+}
+
+@keyframes fadeIn{
+  from{
+    opacity:0;
+    transform:translateY(8px)
+  }
+  to{
+    opacity:1;
+    transform:translateY(0)
+  }
+}
+
+@keyframes ringPulse{
+  0%,100%{
+    transform:scale(1);
+    opacity:.8
+  }
+  50%{
+    transform:scale(1.07);
+    opacity:.35
+  }
+}
+
+@keyframes scan{
+  0%,100%{
+    transform:translateY(-48px);
+    opacity:.15
+  }
+  50%{
+    transform:translateY(48px);
+    opacity:1
+  }
+}
+
+.float{
+  animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%,100%{
+    transform:translateY(0)
+  }
+  50%{
+    transform:translateY(-5px)
+  }
+}
+
+@keyframes profileGlow{
+  0%,100%{
+    box-shadow:0 5px 15px rgba(91,53,213,.22);
+  }
+  50%{
+    box-shadow:0 7px 23px rgba(91,53,213,.42);
+  }
+}
+
+@keyframes notificationPulse{
+  0%,100%{
+    transform:scale(1);
+    opacity:1
+  }
+  50%{
+    transform:scale(1.28);
+    opacity:.72
+  }
+}
+
+@keyframes cardCircle{
+  0%,100%{
+    transform:translate(0,0) scale(1)
+  }
+  50%{
+    transform:translate(-8px,-6px) scale(1.08)
+  }
+}
+
+@keyframes cardCircleSmall{
+  0%,100%{
+    transform:translate(0,0) rotate(0deg)
+  }
+  50%{
+    transform:translate(-7px,7px) rotate(15deg)
+  }
+}
+
+@keyframes quickCircle{
+  0%,100%{
+    transform:translate(0,0) scale(1);
+    opacity:.3;
+  }
+  50%{
+    transform:translate(-8px,7px) scale(1.18);
+    opacity:.55;
+  }
+}
+
+@keyframes blockFloat{
+  0%,100%{
+    transform:translateY(0)
+  }
+  50%{
+    transform:translateY(-3px)
+  }
+}
+
+@keyframes coloredBlock{
+  0%,100%{
+    transform:rotate(25deg) translate(0,0);
+    opacity:.42;
+  }
+  50%{
+    transform:rotate(32deg) translate(-7px,-7px);
+    opacity:.65;
+  }
+}
+
+/* NEW ANIMATIONS */
+
+@keyframes homeCardEntrance{
+  from{
+    opacity:0;
+    transform:translateY(13px) scale(.985);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0) scale(1);
+  }
+}
+
+@keyframes balanceGlow{
+  0%,100%{
+    box-shadow:0 18px 35px rgba(71,37,175,.23);
+  }
+  50%{
+    box-shadow:0 20px 43px rgba(91,53,213,.34);
+  }
+}
+
+@keyframes promoEntrance{
+  from{
+    opacity:0;
+    transform:translateY(12px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+
+@keyframes promoFloat{
+  0%,100%{
+    transform:translate(0,0) scale(1);
+  }
+  50%{
+    transform:translate(-8px,-7px) scale(1.08);
+  }
+}
+
+@keyframes promoOrb{
+  0%,100%{
+    transform:translate(0,0);
+  }
+  50%{
+    transform:translate(-8px,8px);
+  }
+}
+
+@keyframes coinFloat{
+  0%,100%{
+    transform:translateY(0) rotate(0deg);
+  }
+  50%{
+    transform:translateY(-8px) rotate(8deg);
+  }
+}
+
+@keyframes accountRingRotate{
+  from{
+    transform:rotate(0deg);
+  }
+  to{
+    transform:rotate(360deg);
+  }
+}
+
+@keyframes verificationPulse{
+  0%,100%{
+    transform:scale(1);
+    box-shadow:0 0 0 0 rgba(53,183,123,.25);
+  }
+  50%{
+    transform:scale(1.08);
+    box-shadow:0 0 0 5px rgba(53,183,123,0);
+  }
+}
+
+@media(min-width:471px){
+  body{
+    background:#e9e6ef;
+  }
+
+  .phone{
+    box-shadow:0 0 60px rgba(0,0,0,.09);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="app">
+
+<!-- =====================================================
+     WELCOME
+     ===================================================== -->
+
+<section id="welcome" class="screen active">
+  <div class="phone">
+
+    <div class="welcome-page">
+
+      <div class="welcome-logo">
+        <div class="logo-mark">C</div>
+        carbon
+      </div>
+
+      <div class="welcome-copy">
+        <h1>Banking that<br>moves with you.</h1>
+        <p>
+          Simple, secure and designed around the way you manage your money.
+        </p>
+      </div>
+
+      <div class="face-area float">
+
+        <div class="face-ring"></div>
+
+        <div class="scan-corner scan-tl"></div>
+        <div class="scan-corner scan-tr"></div>
+        <div class="scan-corner scan-bl"></div>
+        <div class="scan-corner scan-br"></div>
+
+        <div class="face-scan"></div>
+
+        <img
+          class="face-image"
+          src="https://i.ibb.co/ksJb4nY0/IMG-1776.jpg"
+          alt="Profile"
+        >
+
+      </div>
+
+      <div class="verification-pill">
+        <span class="green-dot"></span>
+        Face ID ready
+      </div>
+
+      <div class="welcome-bottom">
+
+        <button class="primary" onclick="go('verify')">
+          Continue
+        </button>
+
+        <div class="welcome-note">
+          Secure access to your account
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+
+<!-- =====================================================
+     VERIFY
+     ===================================================== -->
+
+<section id="verify" class="screen">
+
+  <div class="phone">
+
+    <div class="page no-nav">
+
+      <div class="verify-hero">
+
+        <div class="verify-back">
+          <button class="back" onclick="go('welcome')">
+            ‹
+          </button>
+        </div>
+
+        <div class="verify-face">
+
+          <img
+            src="https://i.ibb.co/ksJb4nY0/IMG-1776.jpg"
+            alt="Profile"
+          >
+
+        </div>
+
+        <h1 class="verify-title">
+          Verify your identity
+        </h1>
+
+        <p class="verify-sub">
+          Use your secure verification to access your Carbon account.
+        </p>
+
+      </div>
+
+      <div class="status-card">
+
+        <div class="status-icon">
+          ✓
+        </div>
+
+        <div class="status-text">
+          <strong>Face verification</strong>
+          <span>
+            Ready to securely verify your account
+          </span>
+        </div>
+
+      </div>
+
+      <div class="status-card">
+
+        <div class="status-icon">
+          ▣
+        </div>
+
+        <div class="status-text">
+          <strong>Secure account access</strong>
+          <span>
+            Your account information remains protected.
+          </span>
+        </div>
+
+      </div>
+
+      <button
+        class="action-btn verify-btn"
+        onclick="go('home')"
+      >
+        Verify &amp; Continue
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     HOME
+     ===================================================== -->
+
+<section id="home" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="home-head">
+
+        <div class="greeting">
+
+          <div class="small-profile-wrap">
+
+            <img
+              class="small-profile"
+              src="https://i.ibb.co/ksJb4nY0/IMG-1776.jpg"
+              alt="Profile"
+            >
+
+          </div>
+
+          <div class="greeting-text">
+
+            <small>
+              Welcome back
+            </small>
+
+            <strong>
+              Esther
+            </strong>
+
+          </div>
+
+        </div>
+
+        <button
+          class="bell"
+          onclick="showToast('No new notifications')"
+        >
+
+          <span class="notify-dot"></span>
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+
+            <path
+              d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+            />
+
+            <path d="M10 21h4"/>
+
+          </svg>
+
+        </button>
+
+      </div>
+
+
+      <!-- MAIN ACCOUNT CARD -->
+
+      <div class="balance-card fade-in">
+
+        <span class="balance-label">
+          Main Account Balance
+        </span>
+
+        <div class="balance">
+          ₦0.00
+        </div>
+
+        <div class="balance-row">
+
+          <div class="account-mini">
+
+            Account number
+
+            <strong>
+              4607145674
+            </strong>
+
+          </div>
+
+          <button
+            class="copy-mini"
+            onclick="copyAccount()"
+          >
+            Copy
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- QUICK BUTTONS -->
+
+      <div class="quick-grid">
+
+        <button
+          class="quick"
+          onclick="go('payment')"
+        >
+
+          <div class="quick-icon">
+            ₦
+          </div>
+
+          <span>
+            Pay
+          </span>
+
+        </button>
+
+
+        <button
+          class="quick"
+          onclick="go('savings')"
+        >
+
+          <div class="quick-icon">
+            ▣
+          </div>
+
+          <span>
+            Savings
+          </span>
+
+        </button>
+
+
+        <button
+          class="quick"
+          onclick="go('loans')"
+        >
+
+          <div class="quick-icon">
+            ▤
+          </div>
+
+          <span>
+            Loans
+          </span>
+
+        </button>
+
+
+        <button
+          class="quick"
+          onclick="go('cards')"
+        >
+
+          <div class="quick-icon">
+            ▭
+          </div>
+
+          <span>
+            Cards
+          </span>
+
+        </button>
+
+      </div>
+
+
+      <!-- QUICK ACCESS -->
+
+      <div class="section-head">
+
+        <h3>
+          Quick access
+        </h3>
+
+        <button
+          class="see"
+          onclick="go('account')"
+        >
+          Account
+        </button>
+
+      </div>
+
+
+      <div class="feature-row">
+
+        <button
+          class="feature purple"
+          onclick="go('loans')"
+        >
+
+          <div class="feature-icon">
+            ↗
+          </div>
+
+          <strong>
+            Loans
+          </strong>
+
+          <span>
+            View your active loans
+          </span>
+
+        </button>
+
+
+        <button
+          class="feature green"
+          onclick="go('credits')"
+        >
+
+          <div class="feature-icon">
+            ₦
+          </div>
+
+          <strong>
+            Credit Report
+          </strong>
+
+          <span>
+            View your credit information
+          </span>
+
+        </button>
+
+      </div>
+
+
+      <!-- NEW ANIMATED HOMEPAGE PROMO -->
+
+      <div class="home-promo">
+
+        <div class="home-promo-content">
+
+          <small>
+            SMART SAVINGS
+          </small>
+
+          <h3>
+            Make your money<br>
+            work smarter.
+          </h3>
+
+          <p>
+            Keep your money organised and make every naira count.
+          </p>
+
+          <button
+            class="promo-button"
+            onclick="go('savings')"
+          >
+            Save in Carbon
+            <span>→</span>
+          </button>
+
+        </div>
+
+
+        <div class="promo-decoration">
+
+          <div class="promo-coin one">
+            ₦
+          </div>
+
+          <div class="promo-coin two">
+            ₦
+          </div>
+
+          <div class="promo-coin three">
+            ₦
+          </div>
+
+          <div class="promo-glass"></div>
+
+        </div>
+
+      </div>
+
+
+      <!-- RECENT TRANSACTIONS -->
+
+      <div class="section-head">
+
+        <h3>
+          Recent transactions
+        </h3>
+
+        <button
+          class="see"
+          onclick="go('transactions')"
+        >
+          See all
+        </button>
+
+      </div>
+
+
+      <div class="transaction-list">
+
+
+        <div
+          class="tx"
+          onclick="go('loan01')"
+        >
+
+          <div class="tx-icon loan">
+            ₦
+          </div>
+
+          <div class="tx-main">
+
+            <strong>
+              Loan 01 Disbursement
+            </strong>
+
+            <small>
+              Loan disbursement
+            </small>
+
+          </div>
+
+          <div class="tx-amount credit">
+
+            +₦759,000
+
+            <span class="tx-date">
+              19 Aug 2025
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="tx">
+
+          <div class="tx-icon vat">
+            ▤
+          </div>
+
+          <div class="tx-main">
+
+            <strong>
+              VAT / Charges
+            </strong>
+
+            <small>
+              Loan-related VAT entry
+            </small>
+
+          </div>
+
+          <div class="tx-amount debit">
+
+            -₦11,385
+
+            <span class="tx-date">
+              19 Aug 2025
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="tx"
+          onclick="go('loan02')"
+        >
+
+          <div class="tx-icon loan">
+            ₦
+          </div>
+
+          <div class="tx-main">
+
+            <strong>
+              Loan 02 Disbursement
+            </strong>
+
+            <small>
+              Loan disbursement
+            </small>
+
+          </div>
+
+          <div class="tx-amount credit">
+
+            +₦455,000
+
+            <span class="tx-date">
+              20 Aug 2025
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="tx">
+
+          <div class="tx-icon vat">
+            ▤
+          </div>
+
+          <div class="tx-main">
+
+            <strong>
+              VAT / Charges
+            </strong>
+
+            <small>
+              Loan-related VAT entry
+            </small>
+
+          </div>
+
+          <div class="tx-amount debit">
+
+            -₦6,825
+
+            <span class="tx-date">
+              20 Aug 2025
+            </span>
+
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </div>
+
+
+    <div class="bottom-nav">
+
+      <button
+        class="nav-item active"
+        onclick="go('home')"
+      >
+        <div class="nav-icon">⌂</div>
+        Home
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="go('transactions')"
+      >
+        <div class="nav-icon">☷</div>
+        Activity
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="go('loans')"
+      >
+        <div class="nav-icon">▣</div>
+        Loans
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="go('account')"
+      >
+        <div class="nav-icon">♙</div>
+        Account
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     TRANSACTIONS
+     ===================================================== -->
+
+<section id="transactions" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('home')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Transactions
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div class="filter-row">
+
+        <button class="filter active">
+          All
+        </button>
+
+        <button class="filter">
+          Money In
+        </button>
+
+        <button class="filter">
+          Money Out
+        </button>
+
+        <button class="filter">
+          Loans
+        </button>
+
+      </div>
+
+
+      <div class="tx-page-list">
+
+        <div class="month-label">
+          AUGUST 2025
+        </div>
+
+
+        <div
+          class="tx"
+          onclick="go('loan01')"
+        >
+
+          <div class="tx-icon loan">
+            ₦
+          </div>
+
+          <div class="tx-main">
+
+            <strong>
+              Loan 01 Disbursement
+            </strong>
+
+            <small>
+              Principal disbursement
+            </small>
+
+          </div>
+
+          <div class="tx-amount credit">
+
+            +₦759,000
+
+            <span class="tx-date">
+              19 Aug 2025
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="tx">
+
+          <div class="tx-icon vat">
+            ▤
+          </div>
+
+          <div class="tx-main">
+
+            <strong>
+              VAT / Charges
+            </strong>
+
+            <small>
+              Loan 01 related charge
+            </small>
+
+          </div>
+
+          <div class="tx-amount debit">
+
+            -₦11,385
+
+            <span class="tx-date">
+              19 Aug 2025
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div
+          class="tx"
+          onclick="go('loan02')"
+        >
+
+          <div class="tx-icon loan">
+            ₦
+          </div>
+
+          <div class="tx-main">
+
+            <strong>
+              Loan 02 Disbursement
+            </strong>
+
+            <small>
+              Principal disbursement
+            </small>
+
+          </div>
+
+          <div class="tx-amount credit">
+
+            +₦455,000
+
+            <span class="tx-date">
+              20 Aug 2025
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="tx">
+
+          <div class="tx-icon vat">
+            ▤
+          </div>
+
+          <div class="tx-main">
+
+            <strong>
+              VAT / Charges
+            </strong>
+
+            <small>
+              Loan 02 related charge
+            </small>
+
+          </div>
+
+          <div class="tx-amount debit">
+
+            -₦6,825
+
+            <span class="tx-date">
+              20 Aug 2025
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="month-label">
+          RECENT ACTIVITY
+        </div>
+
+
+        <div class="tx">
+
+          <div class="tx-icon payment">
+            →
+          </div>
+
+          <div class="tx-main">
+
+            <strong>
+              Account Activity
+            </strong>
+
+            <small>
+              Account maintained
+            </small>
+
+          </div>
+
+          <div class="tx-amount">
+
+            ₦0.00
+
+            <span class="tx-date">
+              Current
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="bottom-nav">
+
+      <button
+        class="nav-item"
+        onclick="go('home')"
+      >
+        <div class="nav-icon">⌂</div>
+        Home
+      </button>
+
+      <button
+        class="nav-item active"
+        onclick="go('transactions')"
+      >
+        <div class="nav-icon">☷</div>
+        Activity
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="go('loans')"
+      >
+        <div class="nav-icon">▣</div>
+        Loans
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="go('account')"
+      >
+        <div class="nav-icon">♙</div>
+        Account
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     LOANS
+     ===================================================== -->
+
+<section id="loans" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('home')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Loans
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div class="simple-card">
+
+        <div class="simple-icon">
+          ↗
+        </div>
+
+        <h3>
+          Your loans
+        </h3>
+
+        <p>
+          View your original loan amounts, activity, charges, accumulation and repayment information.
+        </p>
+
+      </div>
+
+
+      <div
+        class="loan-card"
+        onclick="go('loan01')"
+      >
+
+        <div class="loan-top">
+
+          <div class="loan-name">
+            Loan 01
+          </div>
+
+          <div class="loan-status">
+            OVERDUE
+          </div>
+
+        </div>
+
+        <div class="loan-amount">
+          ₦759,000
+        </div>
+
+        <div class="loan-meta">
+
+          <div>
+
+            <small>
+              Disbursed
+            </small>
+
+            <span>
+              19 Aug 2025
+            </span>
+
+          </div>
+
+          <div>
+
+            <small>
+              Principal
+            </small>
+
+            <span>
+              ₦759,000
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="loan-card"
+        onclick="go('loan02')"
+      >
+
+        <div class="loan-top">
+
+          <div class="loan-name">
+            Loan 02
+          </div>
+
+          <div class="loan-status">
+            OVERDUE
+          </div>
+
+        </div>
+
+        <div class="loan-amount">
+          ₦455,000
+        </div>
+
+        <div class="loan-meta">
+
+          <div>
+
+            <small>
+              Disbursed
+            </small>
+
+            <span>
+              20 Aug 2025
+            </span>
+
+          </div>
+
+          <div>
+
+            <small>
+              Principal
+            </small>
+
+            <span>
+              ₦455,000
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <div class="bottom-nav">
+
+      <button
+        class="nav-item"
+        onclick="go('home')"
+      >
+        <div class="nav-icon">⌂</div>
+        Home
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="go('transactions')"
+      >
+        <div class="nav-icon">☷</div>
+        Activity
+      </button>
+
+      <button
+        class="nav-item active"
+        onclick="go('loans')"
+      >
+        <div class="nav-icon">▣</div>
+        Loans
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="go('account')"
+      >
+        <div class="nav-icon">♙</div>
+        Account
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     LOAN 01
+     ===================================================== -->
+
+<section id="loan01" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('loans')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Loan 01
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div class="amount-hero">
+
+        <span class="amount-label">
+          Original Principal
+        </span>
+
+        <div class="amount-value">
+          ₦759,000
+        </div>
+
+      </div>
+
+
+      <div class="detail-card">
+
+        <div class="detail-title">
+          Loan information
+        </div>
+
+
+        <div class="detail-grid">
+
+          <div class="detail-item">
+            <small>Original principal</small>
+            <strong>₦759,000</strong>
+          </div>
+
+          <div class="detail-item">
+            <small>Disbursement date</small>
+            <strong>19 Aug 2025</strong>
+          </div>
+
+          <div class="detail-item">
+            <small>Due date</small>
+            <strong>18 Sep 2025</strong>
+          </div>
+
+          <div class="detail-item">
+            <small>Term</small>
+            <strong>30 days</strong>
+          </div>
+
+          <div class="detail-item">
+            <small>Overdue duration</small>
+            <strong>372 days</strong>
+          </div>
+
+          <div class="detail-item">
+            <small>Repayment status</small>
+            <strong>Outstanding</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="detail-card">
+
+        <div class="detail-title">
+          Accumulation &amp; breakdown
+        </div>
+
+
+        <div class="breakdown-row">
+          <span>Original principal</span>
+          <span>₦759,000</span>
+        </div>
+
+        <div class="breakdown-row">
+          <span>Accumulated interest / charges</span>
+          <span>₦153,481</span>
+        </div>
+
+        <div class="breakdown-row">
+          <span>Total accumulated</span>
+          <span>₦912,481</span>
+        </div>
+
+
+        <div class="progress">
+          <span></span>
+        </div>
+
+
+        <div style="font-size:9px;color:#97939e;">
+          Accumulation shown from the existing loan information and recorded dates.
+        </div>
+
+      </div>
+
+
+      <div class="detail-card">
+
+        <div class="detail-title">
+          Loan activity
+        </div>
+
+
+        <div class="activity">
+
+          <div class="activity-item">
+
+            <div class="activity-dot"></div>
+
+            <strong>
+              Loan disbursed — ₦759,000
+            </strong>
+
+            <span>
+              19 Aug 2025
+            </span>
+
+          </div>
+
+
+          <div class="activity-item">
+
+            <div class="activity-dot"></div>
+
+            <strong>
+              VAT / charge recorded
+            </strong>
+
+            <span>
+              19 Aug 2025
+            </span>
+
+          </div>
+
+
+          <div class="activity-item">
+
+            <div class="activity-dot"></div>
+
+            <strong>
+              Repayment due
+            </strong>
+
+            <span>
+              18 Sep 2025
+            </span>
+
+          </div>
+
+
+          <div class="activity-item">
+
+            <div class="activity-dot"></div>
+
+            <strong>
+              Account remains outstanding
+            </strong>
+
+            <span>
+              Current status
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     LOAN 02
+     ===================================================== -->
+
+<section id="loan02" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('loans')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Loan 02
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div class="amount-hero">
+
+        <span class="amount-label">
+          Original Principal
+        </span>
+
+        <div class="amount-value">
+          ₦455,000
+        </div>
+
+      </div>
+
+
+      <div class="detail-card">
+
+        <div class="detail-title">
+          Loan information
+        </div>
+
+
+        <div class="detail-grid">
+
+          <div class="detail-item">
+            <small>Original principal</small>
+            <strong>₦455,000</strong>
+          </div>
+
+          <div class="detail-item">
+            <small>Disbursement date</small>
+            <strong>20 Aug 2025</strong>
+          </div>
+
+          <div class="detail-item">
+            <small>Due date</small>
+            <strong>19 Sep 2025</strong>
+          </div>
+
+          <div class="detail-item">
+            <small>Term</small>
+            <strong>30 days</strong>
+          </div>
+
+          <div class="detail-item">
+            <small>Overdue duration</small>
+            <strong>371 days</strong>
+          </div>
+
+          <div class="detail-item">
+            <small>Repayment status</small>
+            <strong>Outstanding</strong>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="detail-card">
+
+        <div class="detail-title">
+          Accumulation &amp; breakdown
+        </div>
+
+
+        <div class="breakdown-row">
+          <span>Original principal</span>
+          <span>₦455,000</span>
+        </div>
+
+        <div class="breakdown-row">
+          <span>Accumulated interest / charges</span>
+          <span>₦92,076</span>
+        </div>
+
+        <div class="breakdown-row">
+          <span>Total accumulated</span>
+          <span>₦547,076</span>
+        </div>
+
+
+        <div class="progress">
+          <span></span>
+        </div>
+
+
+        <div style="font-size:9px;color:#97939e;">
+          Accumulation shown from the existing loan information and recorded dates.
+        </div>
+
+      </div>
+
+
+      <div class="detail-card">
+
+        <div class="detail-title">
+          Loan activity
+        </div>
+
+
+        <div class="activity">
+
+          <div class="activity-item">
+
+            <div class="activity-dot"></div>
+
+            <strong>
+              Loan disbursed — ₦455,000
+            </strong>
+
+            <span>
+              20 Aug 2025
+            </span>
+
+          </div>
+
+
+          <div class="activity-item">
+
+            <div class="activity-dot"></div>
+
+            <strong>
+              VAT / charge recorded
+            </strong>
+
+            <span>
+              20 Aug 2025
+            </span>
+
+          </div>
+
+
+          <div class="activity-item">
+
+            <div class="activity-dot"></div>
+
+            <strong>
+              Repayment due
+            </strong>
+
+            <span>
+              19 Sep 2025
+            </span>
+
+          </div>
+
+
+          <div class="activity-item">
+
+            <div class="activity-dot"></div>
+
+            <strong>
+              Account remains outstanding
+            </strong>
+
+            <span>
+              Current status
+            </span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     ACCOUNT
+     ===================================================== -->
+
+<section id="account" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('home')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Account
+        </h2>
+
+
+        <button
+          class="bell"
+          onclick="showToast('No new notifications')"
+        >
+
+          <span class="notify-dot"></span>
+
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+          >
+
+            <path
+              d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"
+            />
+
+            <path d="M10 21h4"/>
+
+          </svg>
+
+        </button>
+
+      </div>
+
+
+      <div class="account-hero">
+
+
+        <div class="account-person">
+
+          <div class="account-photo-ring">
+
+            <img
+              class="account-photo"
+              src="https://i.ibb.co/ksJb4nY0/IMG-1776.jpg"
+              alt="Profile"
+            >
+
+          </div>
+
+
+          <div>
+
+            <strong>
+              Esther Opemipo
+            </strong>
+
+            <span>
+              Personal Account
+            </span>
+
+          </div>
+
+        </div>
+
+
+        <div class="account-number">
+
+          <div class="account-number-text">
+
+            <small>
+              Account number
+            </small>
+
+            <strong>
+              4607145674
+            </strong>
+
+          </div>
+
+
+          <button
+            class="copy-account"
+            onclick="copyAccount()"
+          >
+            Copy
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <div class="account-balance">
+
+        <small>
+          Main account balance
+        </small>
+
+        <strong>
+          ₦0.00
+        </strong>
+
+      </div>
+
+
+      <div class="account-section">
+
+        <div class="account-section-title">
+          Account
+        </div>
+
+
+        <div class="account-list">
+
+
+          <div
+            class="account-row"
+            onclick="go('kyc')"
+          >
+
+            <div class="option-icon">
+              ♙
+            </div>
+
+            <div class="account-row-main">
+
+              <strong>
+                KYC Information
+              </strong>
+
+              <span>
+                View your verification information
+              </span>
+
+            </div>
+
+            <div class="arrow">
+              ›
+            </div>
+
+          </div>
+
+
+          <div
+            class="account-row"
+            onclick="go('loans')"
+          >
+
+            <div class="option-icon">
+              ▣
+            </div>
+
+            <div class="account-row-main">
+
+              <strong>
+                Loans
+              </strong>
+
+              <span>
+                View your loan information
+              </span>
+
+            </div>
+
+            <div class="arrow">
+              ›
+            </div>
+
+          </div>
+
+
+          <div
+            class="account-row"
+            onclick="go('credits')"
+          >
+
+            <div class="option-icon">
+              ₦
+            </div>
+
+            <div class="account-row-main">
+
+              <strong>
+                Credit Report
+              </strong>
+
+              <span>
+                View your credit report
+              </span>
+
+            </div>
+
+            <div class="arrow">
+              ›
+            </div>
+
+          </div>
+
+
+          <div
+            class="account-row"
+            onclick="go('transactions')"
+          >
+
+            <div class="option-icon">
+              ☷
+            </div>
+
+            <div class="account-row-main">
+
+              <strong>
+                Transaction History
+              </strong>
+
+              <span>
+                Review your account activity
+              </span>
+
+            </div>
+
+            <div class="arrow">
+              ›
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <div class="account-section">
+
+        <div class="account-section-title">
+          Documents
+        </div>
+
+
+        <div class="account-list">
+
+
+          <div
+            class="account-row"
+            onclick="go('letter')"
+          >
+
+            <div class="option-icon">
+              ▤
+            </div>
+
+            <div class="account-row-main">
+
+              <strong>
+                Letter of Non-indebtedness
+              </strong>
+
+              <span>
+                View account document
+              </span>
+
+            </div>
+
+            <div class="arrow">
+              ›
+            </div>
+
+          </div>
+
+
+          <div
+            class="account-row"
+            onclick="go('reports')"
+          >
+
+            <div class="option-icon">
+              ▥
+            </div>
+
+            <div class="account-row-main">
+
+              <strong>
+                Reports
+              </strong>
+
+              <span>
+                Account and financial reports
+              </span>
+
+            </div>
+
+            <div class="arrow">
+              ›
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+      <div class="account-section">
+
+        <div class="account-section-title">
+          Support
+        </div>
+
+
+        <div class="account-list">
+
+
+          <div
+            class="account-row"
+            onclick="go('support')"
+          >
+
+            <div class="option-icon">
+              ?
+            </div>
+
+            <div class="account-row-main">
+
+              <strong>
+                Customer Support
+              </strong>
+
+              <span>
+                Get help with your account
+              </span>
+
+            </div>
+
+            <div class="arrow">
+              ›
+            </div>
+
+          </div>
+
+
+        </div>
+
+      </div>
+
+
+    </div>
+
+
+    <div class="bottom-nav">
+
+      <button
+        class="nav-item"
+        onclick="go('home')"
+      >
+        <div class="nav-icon">⌂</div>
+        Home
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="go('transactions')"
+      >
+        <div class="nav-icon">☷</div>
+        Activity
+      </button>
+
+      <button
+        class="nav-item"
+        onclick="go('loans')"
+      >
+        <div class="nav-icon">▣</div>
+        Loans
+      </button>
+
+      <button
+        class="nav-item active"
+        onclick="go('account')"
+      >
+        <div class="nav-icon">♙</div>
+        Account
+      </button>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     SAVINGS
+     ===================================================== -->
+
+<section id="savings" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('home')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Savings
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div class="amount-hero">
+
+        <span class="amount-label">
+          Savings balance
+        </span>
+
+        <div class="amount-value">
+          ₦0.00
+        </div>
+
+      </div>
+
+
+      <div class="simple-card">
+
+        <div class="simple-icon">
+          ▣
+        </div>
+
+        <h3>
+          Save with ease
+        </h3>
+
+        <p>
+          Manage your savings and keep your financial goals organised from one place.
+        </p>
+
+        <button
+          class="action-btn"
+          onclick="showToast('Savings feature selected')"
+        >
+          Get started
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     PAYMENT
+     ===================================================== -->
+
+<section id="payment" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('home')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Payment
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div class="simple-card">
+
+        <div class="simple-icon">
+          ₦
+        </div>
+
+        <h3>
+          Make a payment
+        </h3>
+
+        <p>
+          Choose a payment method and manage your account payments securely.
+        </p>
+
+        <button
+          class="action-btn"
+          onclick="showToast('Payment option selected')"
+        >
+          Continue
+        </button>
+
+      </div>
+
+
+      <div class="simple-card">
+
+        <h3>
+          Payment methods
+        </h3>
+
+
+        <div
+          class="account-row"
+          style="padding-left:0;padding-right:0;"
+        >
+
+          <div class="option-icon">
+            ₦
+          </div>
+
+          <div class="account-row-main">
+
+            <strong>
+              Bank transfer
+            </strong>
+
+            <span>
+              Transfer funds to your account
+            </span>
+
+          </div>
+
+          <div class="arrow">
+            ›
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     CREDIT REPORT
+     ===================================================== -->
+
+<section id="credits" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('account')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Credit Report
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div class="amount-hero">
+
+        <span class="amount-label">
+          Credit report
+        </span>
+
+        <div
+          class="amount-value"
+          style="font-size:25px;"
+        >
+          Available
+        </div>
+
+      </div>
+
+
+      <div class="simple-card">
+
+        <div class="simple-icon">
+          ₦
+        </div>
+
+        <h3>
+          Credit information
+        </h3>
+
+        <p>
+          Your credit information and related account records can be reviewed here.
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     REPORTS
+     ===================================================== -->
+
+<section id="reports" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('account')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Reports
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div class="simple-card">
+
+        <div class="simple-icon">
+          ▥
+        </div>
+
+        <h3>
+          Account reports
+        </h3>
+
+        <p>
+          Review your financial activity and account information.
+        </p>
+
+      </div>
+
+
+      <div class="detail-card">
+
+        <div class="detail-title">
+          Account summary
+        </div>
+
+
+        <div class="breakdown-row">
+          <span>Main balance</span>
+          <span>₦0.00</span>
+        </div>
+
+        <div class="breakdown-row">
+          <span>Loan 01 principal</span>
+          <span>₦759,000</span>
+        </div>
+
+        <div class="breakdown-row">
+          <span>Loan 02 principal</span>
+          <span>₦455,000</span>
+        </div>
+
+        <div class="breakdown-row">
+          <span>Total original loan principal</span>
+          <span>₦1,214,000</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     CARDS
+     ===================================================== -->
+
+<section id="cards" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('home')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Cards
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div
+        class="balance-card"
+        style="min-height:205px;"
+      >
+
+        <div style="font-size:12px;opacity:.7;">
+          Carbon
+        </div>
+
+        <div
+          style="font-size:20px;font-weight:800;margin-top:32px;letter-spacing:3px;"
+        >
+          •••• •••• •••• 0000
+        </div>
+
+        <div
+          style="display:flex;justify-content:space-between;margin-top:28px;font-size:10px;"
+        >
+          <span>
+            ESTHER OPEMIPO
+          </span>
+
+          <span>
+            VISA
+          </span>
+        </div>
+
+      </div>
+
+
+      <div class="simple-card">
+
+        <h3>
+          Manage your card
+        </h3>
+
+        <p>
+          Card controls and account card information.
+        </p>
+
+        <button
+          class="action-btn"
+          onclick="showToast('Card controls opened')"
+        >
+          Manage card
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     BILLS
+     ===================================================== -->
+
+<section id="bills" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('home')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Bills
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div class="simple-card">
+
+        <div class="simple-icon">
+          ₦
+        </div>
+
+        <h3>
+          Pay bills
+        </h3>
+
+        <p>
+          Manage your recurring and everyday payments.
+        </p>
+
+        <button
+          class="action-btn"
+          onclick="showToast('Bill payment selected')"
+        >
+          Pay a bill
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     KYC
+     ===================================================== -->
+
+<section id="kyc" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('account')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          KYC Information
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div class="kyc-banner">
+
+        <div class="kyc-status">
+
+          <span class="green-dot"></span>
+
+          Verified
+
+        </div>
+
+        <h3>
+          KYC information
+        </h3>
+
+        <p>
+          Your account verification information is available in this section.
+        </p>
+
+      </div>
+
+
+      <div class="detail-card">
+
+        <div class="detail-title">
+          Account information
+        </div>
+
+
+        <div class="breakdown-row">
+          <span>Account name</span>
+          <span>Esther Opemipo</span>
+        </div>
+
+        <div class="breakdown-row">
+          <span>Account number</span>
+          <span>4607145674</span>
+        </div>
+
+        <div class="breakdown-row">
+          <span>Status</span>
+          <span>Verified</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     LETTER
+     ===================================================== -->
+
+<section id="letter" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('account')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Letter
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div class="simple-card">
+
+        <div class="simple-icon">
+          ▤
+        </div>
+
+        <h3>
+          Letter of Non-indebtedness
+        </h3>
+
+        <p>
+          Account document section for the Letter of Non-indebtedness.
+        </p>
+
+        <button
+          class="action-btn"
+          onclick="showToast('Document selected')"
+        >
+          View document
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     SUPPORT
+     ===================================================== -->
+
+<section id="support" class="screen">
+
+  <div class="phone">
+
+    <div class="page">
+
+      <div class="topbar">
+
+        <button
+          class="back"
+          onclick="go('account')"
+        >
+          ‹
+        </button>
+
+        <h2 class="top-title">
+          Customer Support
+        </h2>
+
+        <div class="spacer"></div>
+
+      </div>
+
+
+      <div class="simple-card">
+
+        <div class="simple-icon">
+          ?
+        </div>
+
+        <h3>
+          We're here to help
+        </h3>
+
+        <p>
+          Get assistance with your account, transactions, loans or other account services.
+        </p>
+
+        <button
+          class="action-btn"
+          onclick="showToast('Support selected')"
+        >
+          Contact support
+        </button>
+
+      </div>
+
+
+      <div class="simple-card">
+
+        <h3>
+          Common help
+        </h3>
+
+
+        <div
+          class="account-row"
+          style="padding-left:0;padding-right:0;"
+        >
+
+          <div class="option-icon">
+            ?
+          </div>
+
+          <div class="account-row-main">
+
+            <strong>
+              Account questions
+            </strong>
+
+            <span>
+              Information about your account
+            </span>
+
+          </div>
+
+          <div class="arrow">
+            ›
+          </div>
+
+        </div>
+
+
+        <div
+          class="account-row"
+          style="padding-left:0;padding-right:0;"
+        >
+
+          <div class="option-icon">
+            ₦
+          </div>
+
+          <div class="account-row-main">
+
+            <strong>
+              Loan questions
+            </strong>
+
+            <span>
+              Information about loans
+            </span>
+
+          </div>
+
+          <div class="arrow">
+            ›
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+</div>
+
+
+<!-- =====================================================
+     TOAST
+     ===================================================== -->
+
+<div id="toast" class="toast"></div>
+
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<script>
+
+const screens = document.querySelectorAll('.screen');
+
+const pageHistory = ['welcome'];
+
+
+function go(page, saveHistory = true){
+
+  const target = document.getElementById(page);
+
+  if(!target) return;
+
+  const current = document.querySelector('.screen.active');
+
+  if(current && current.id === page) return;
+
+
+  if(saveHistory && current){
+    pageHistory.push(current.id);
+  }
+
+
+  screens.forEach(screen =>
+    screen.classList.remove('active')
+  );
+
+
+  target.classList.add('active');
+
+
+  window.scrollTo({
+    top:0,
+    behavior:'instant'
+  });
+
+
+  const phone = target.querySelector('.phone');
+
+
+  if(phone){
+    phone.scrollTop = 0;
+  }
+
+
+  target
+    .querySelector('.page,.welcome-page')
+    ?.classList.add('fade-in');
+
+}
+
+
+function back(){
+
+  if(pageHistory.length > 1){
+
+    pageHistory.pop();
+
+    const previous =
+      pageHistory[pageHistory.length - 1];
+
+    go(previous,false);
+
+  }else{
+
+    go('welcome',false);
+
+  }
+
+}
+
+
+function copyAccount(){
+
+  const number = '4607145674';
+
+
+  if(
+    navigator.clipboard &&
+    navigator.clipboard.writeText
+  ){
+
+    navigator.clipboard.writeText(number)
+      .then(() =>
+        showToast('Account number copied')
+      );
+
+  }else{
+
+    const input =
+      document.createElement('input');
+
+    input.value = number;
+
+    document.body.appendChild(input);
+
+    input.select();
+
+    document.execCommand('copy');
+
+    input.remove();
+
+    showToast('Account number copied');
+
+  }
+
+}
+
+
+let toastTimer;
+
+
+function showToast(message){
+
+  const toast =
+    document.getElementById('toast');
+
+  clearTimeout(toastTimer);
+
+  toast.textContent = message;
+
+  toast.classList.add('show');
+
+
+  toastTimer = setTimeout(() => {
+
+    toast.classList.remove('show');
+
+  },2200);
+
+}
+
+
+document.addEventListener('click',event=>{
+
+  const button =
+    event.target.closest('button');
+
+  if(!button) return;
+
+  const ripple =
+    document.createElement('span');
+
+  ripple.style.position='absolute';
+
+  ripple.style.pointerEvents='none';
+
+});
+
+
+document.addEventListener('keydown',event=>{
+
+  if(event.key === 'Enter'){
+
+    const active =
+      document.activeElement;
+
+    if(
+      active &&
+      active.tagName === 'BUTTON'
+    ){
+
+      active.click();
+
+    }
+
+  }
+
+});
+
+</script>
+
+</body>
+</html>
