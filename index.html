@@ -36,9 +36,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
 #repayHomeHit{right:3%;top:68%;width:27%;height:8%}
 #splashTap{left:0;top:0;width:100%;height:100%;z-index:20}
 
-#loanHit2{left:0;bottom:0;width:50%;height:18%;z-index:10}
-#mineHit2{right:0;bottom:0;width:50%;height:18%;z-index:10}
-#bankAccountHit{right:1.5%;top:34.7%;width:11%;height:5.8%;z-index:30}
+#loanHit2{left:0;top:calc(100vw * 2440 / 1284);width:50%;height:calc(100vw * 300 / 1284);z-index:40}
+#mineHit2{right:0;top:calc(100vw * 2440 / 1284);width:50%;height:calc(100vw * 300 / 1284);z-index:40}
+#bankAccountHit{left:51%;top:calc(100vw * 900 / 1284);width:47%;height:calc(100vw * 300 / 1284);z-index:50}
 #backBankHit{left:2%;top:3%;width:12%;height:8%}
 
 #backRepayHit{left:2%;top:3%;width:12%;height:8%}
@@ -167,13 +167,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif}
 .loan-detail-row .danger{color:#ff3348}
 .done-empty{padding:24px 0 8px;font-size:20px;font-weight:600;display:flex;justify-content:space-between;color:#292a31}
 .done-empty span{color:#b4b5bc;font-weight:400}
-#myBillHit{left:4%;top:27%;width:92%;height:6%;z-index:10}
-#bankAccountHit{right:1.5%;top:34.7%;width:11%;height:5.8%;z-index:30}
-#accountSecurityHit{left:4%;top:43%;width:92%;height:6%;z-index:10}
-#couponHit{left:4%;top:49%;width:92%;height:6%;z-index:10}
-#privacyHit{left:4%;top:55%;width:92%;height:6%;z-index:10}
-#loanTermsHit{left:4%;top:61%;width:92%;height:6%;z-index:10}
-#helpCenterHit{left:4%;top:66%;width:92%;height:7%;z-index:10}
+/* Mine-page touch targets are anchored to the supplied 1284x2778 artwork coordinates. */
+#myBillHit{left:3%;top:calc(100vw * 720 / 1284);width:94%;height:calc(100vw * 190 / 1284);z-index:50}
+#bankAccountHit{left:51%;top:calc(100vw * 900 / 1284);width:47%;height:calc(100vw * 300 / 1284);z-index:50}
+#accountSecurityHit{left:3%;top:calc(100vw * 1218 / 1284);width:94%;height:calc(100vw * 180 / 1284);z-index:50}
+#couponHit{left:3%;top:calc(100vw * 1378 / 1284);width:94%;height:calc(100vw * 180 / 1284);z-index:50}
+#privacyHit{left:3%;top:calc(100vw * 1535 / 1284);width:94%;height:calc(100vw * 180 / 1284);z-index:50}
+#loanTermsHit{left:3%;top:calc(100vw * 1692 / 1284);width:94%;height:calc(100vw * 180 / 1284);z-index:50}
+#helpCenterHit{left:3%;top:calc(100vw * 1848 / 1284);width:94%;height:calc(100vw * 190 / 1284);z-index:50}
 #backBillHit{left:1%;top:1%;width:12%;height:9%}
 #historyHit{left:31%;top:14%;width:18%;height:6%}
 #historyRowHit{left:0;top:30%;width:100%;height:12%}
